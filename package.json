@@ -1,0 +1,25 @@
+{
+  "name": "ronin-competition-lambda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chet-Maker/ronin-competition-lambda.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chet-Maker/ronin-competition-lambda/issues"
+  },
+  "homepage": "https://github.com/Chet-Maker/ronin-competition-lambda#readme",
+  "dependencies": {
+    "aws-lambda-ric": "^3.1.0",
+    "aws-sdk": "^2.1560.0",
+    "pg": "^8.11.3"
+  }
+}
