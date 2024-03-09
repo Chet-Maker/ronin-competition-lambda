@@ -37,18 +37,16 @@ exports.handler = async (event) => {
     const pool = await poolPromise;
 
     try {
-        const sqlStmt = `SELECT athlete_id, first_name, last_name, username, birth_date, email, created_dt, updated_dt FROM athlete`;
+        const sqlStmt = `SELECT outcome_id, bout_id, winner_id, loser_id, is_draw, created_dt, updated_dt FROM outcome`;
         const { rows } = await pool.query(sqlStmt);
         
         // Optionally, transform row data as needed before sending response
-        const athletes = rows.map(row => ({
-            athleteId: row.athlete_id,
-            firstName: row.first_name,
-            lastName: row.last_name,
-            username: row.username,
-            birthDate: row.birth_date,
-            email: row.email,
-            // password field is intentionally omitted for security reasons
+        const bouts = rows.map(row => ({
+            outcomeId: row.outcome_id,
+            boutId: row.bout_id,
+            winnerId: row.winner_id,
+            loserId: row.loser_id,
+            is_draw: row.is_draw,
             createdDate: row.created_dt,
             updatedDate: row.updated_dt,
         }));
@@ -56,13 +54,13 @@ exports.handler = async (event) => {
         return {
             statusCode: 200,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(athletes),
+            body: JSON.stringify(bouts),
         };
     } catch (err) {
-        console.error('Error fetching athletes:', err);
+        console.error('Error fetching outcomes:', err);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Failed to get athletes' }),
+            body: JSON.stringify({ error: 'Failed to get outcomes' }),
         };
     }
 };

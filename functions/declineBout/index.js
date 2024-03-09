@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const AWS = require('aws-sdk');
 
-// Initialize AWS SDK for Systems Manager to fetch database configuration
+// Initialize AWS SDK for Systems Manager
 const ssm = new AWS.SSM();
 
 async function getDbConfig() {
@@ -35,34 +35,22 @@ const poolPromise = getDbConfig();
 
 exports.handler = async (event) => {
     const pool = await poolPromise;
+    const { boutId, } = event.pathParameters;
 
     try {
-        const sqlStmt = `SELECT athlete_id, first_name, last_name, username, birth_date, email, created_dt, updated_dt FROM athlete`;
-        const { rows } = await pool.query(sqlStmt);
-        
-        // Optionally, transform row data as needed before sending response
-        const athletes = rows.map(row => ({
-            athleteId: row.athlete_id,
-            firstName: row.first_name,
-            lastName: row.last_name,
-            username: row.username,
-            birthDate: row.birth_date,
-            email: row.email,
-            // password field is intentionally omitted for security reasons
-            createdDate: row.created_dt,
-            updatedDate: row.updated_dt,
-        }));
+        const sqlStmt = `UPDATE bout SET accepted = false, completed = true WHERE bout_id = $1`;
+        await pool.query(sqlStmt, [boutId]);
 
         return {
             statusCode: 200,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(athletes),
+            body: JSON.stringify({ message: "Bout successfully declined" }),
         };
     } catch (err) {
-        console.error('Error fetching athletes:', err);
+        console.error('Error accepting bout:', err);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Failed to get athletes' }),
+            body: JSON.stringify({ error: 'Failed to decline bout' }),
         };
     }
 };
