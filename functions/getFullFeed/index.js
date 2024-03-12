@@ -100,7 +100,7 @@ exports.handler = async (event) => {
                 latest_scores ws ON o.winner_id = ws.athlete_id AND ws.style_id = b.style_id AND ws.row_num = 1
             LEFT JOIN
                 latest_scores ls ON o.loser_id = ls.athlete_id AND ls.style_id = b.style_id AND ls.row_num = 1
-            WHERE b.cancelled != true and ((b.accepted = false and b.completed = false) OR (b.completed = true and b.accepted = true))
+            WHERE b.cancelled = false and b.accepted = true and b.completed = true
             ORDER BY b.updated_dt DESC;
         `;
 

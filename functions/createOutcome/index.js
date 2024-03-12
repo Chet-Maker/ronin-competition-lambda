@@ -71,10 +71,10 @@ exports.handler = async (event) => {
             const outcomeResult = await pool.query(insertOutcomeSql, [bout_id, winnerId, loserId, isDraw, styleId]);
             outcomeId = outcomeResult.rows[0].outcome_id;
             // Update records for winner and loser
-            const updateRecordsForWinnerSql = `UPDATE athlete_record SET wins = wins + 1 WHERE athlete_id = $1`;
-            const updateRecordsForLoserSql = `UPDATE athlete_record SET losses = losses + 1 WHERE athlete_id = $1`;
-            await pool.query(updateRecordsForWinnerSql, [winnerId]);
-            await pool.query(updateRecordsForLoserSql, [loserId]);
+            const updateRecordsForWinnerSql = `UPDATE athlete_record SET wins = wins + 1 WHERE athlete_id = $1 and style_id = $2`;
+            const updateRecordsForLoserSql = `UPDATE athlete_record SET losses = losses + 1 WHERE athlete_id = $1 and style_id = $2`;
+            await pool.query(updateRecordsForWinnerSql, [winnerId, styleId]);
+            await pool.query(updateRecordsForLoserSql, [loserId, styleId]);
             // Get the latest score for each athlete in the style
             const getScoreSql = `SELECT score FROM athlete_score WHERE athlete_id = $1 AND style_id = $2 ORDER BY updated_dt DESC LIMIT 1`;
             const winnerScoreResult = await pool.query(getScoreSql, [winnerId, styleId]);
